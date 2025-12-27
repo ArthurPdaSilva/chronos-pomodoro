@@ -2,8 +2,10 @@ import { PlayCircleIcon } from "lucide-react";
 import { useRef } from "react";
 import { useTaskContext } from "../../context/TaskContext";
 import type { TaskModel } from "../../models/TaskModelConfig";
+import { formatSecondsToMinutes } from "../../utils/formatSecondsToMinutes";
 import { getNextCycle } from "../../utils/getNextCycle";
 import { getNextCycleType } from "../../utils/getNextCycleType";
+import { getNextInterval } from "../../utils/getNextInterval";
 import { Cycles } from "../Cycles";
 import { DefaultButton } from "../DefaultButton";
 import { DefaultInput } from "../DefaultInput";
@@ -30,17 +32,19 @@ export const MainForm = () => {
 			startDate: Date.now(),
 			completeDate: null,
 			interruptDate: null,
-			duration: 1,
+			duration: state.config[nextCycleType],
 			type: nextCycleType,
 		};
+
+		const secondsRemaining = state.config[nextCycleType] * 60;
 
 		setState((prevState) => ({
 			...prevState,
 			tasks: [...prevState.tasks, newTask],
 			activeTask: newTask,
 			currentCycle: nextCycle,
-			secondsRemaining: prevState.config.workTime * 60,
-			formattedSecondsRemaining: "00:00",
+			secondsRemaining,
+			formattedSecondsRemaining: formatSecondsToMinutes(secondsRemaining),
 		}));
 	};
 
@@ -58,10 +62,7 @@ export const MainForm = () => {
 			</div>
 
 			<div className="formRow">
-				<p>
-					{/* lorem5 = vai gerar um lorem com 5 palavras:  Lorem ipsum dolor sit amet.  */}
-					Lorem ipsum dolor sit amet.
-				</p>
+				<p>Próximo intervalo é de {getNextInterval(state.currentCycle)}min</p>
 			</div>
 
 			<div className="formRow">
