@@ -7,12 +7,16 @@ import { DefaultInput } from "../DefaultInput";
 export const MainForm = () => {
 	const taskNameInput = useRef<HTMLInputElement>(null);
 
-	const handleCreateNewTask = (event: React.FormEvent) => {
+	const handleCreateNewTask = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		if (!taskNameInput.current) return;
 
-		const taskName = taskNameInput.current.value;
-		console.log("New task created:", taskName);
+		const taskName = taskNameInput.current?.value.trim();
+		if (!taskName || taskName.length === 0) {
+			alert("Por favor, insira um nome válido para a tarefa.");
+			return;
+		}
+
+		const newTask: TaskModel
 	};
 
 	return (
