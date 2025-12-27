@@ -1,19 +1,32 @@
 /** biome-ignore-all lint/a11y/useValidAnchor: false positive */
-import { HistoryIcon, HouseIcon, SettingsIcon, SunIcon } from "lucide-react";
-import { useCallback, useState } from "react";
+import { HistoryIcon, HouseIcon, MoonIcon, SettingsIcon, SunIcon } from "lucide-react";
+import { useEffect, useState } from "react";
 import styles from "./styles.module.css";
 
 type AvailableThemes = "light" | "dark";
 
+const nextThemeIcon = {
+	dark: <SunIcon />,
+	light: <MoonIcon />,
+};
+
 //Para renomear use ctrl + f e preserve o case sensitive
 export function Menu() {
-	const [theme, setTheme] = useState<AvailableThemes>("light");
+	const [theme, setTheme] = useState<AvailableThemes>(() => {
+		const storageTheme = (localStorage.getItem("theme") as AvailableThemes) || "dark";
+		return storageTheme;
+	});
 
-	const changeTheme = useCallback(() => {
+	useEffect(() => {
+		document.documentElement.setAttribute("data-theme", theme);
+		localStorage.setItem("theme", theme);
+	}, [theme]);
+
+	const changeTheme = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+		event.preventDefault();
 		const newTheme = theme === "light" ? "dark" : "light";
 		setTheme(newTheme);
-		document.documentElement.setAttribute("data-theme", newTheme);
-	}, [theme]);
+	};
 
 	return (
 		<nav className={styles.menu}>
@@ -25,12 +38,7 @@ export function Menu() {
 			>
 				<HouseIcon />
 			</a>
-			<a
-				className={styles.menuLink}
-				href="#"
-				aria-label="Ver o Histórico"
-				title="Ver o Histórico"
-			>
+			<a className={styles.menuLink} href="#" aria-label="Ver o Histórico" title="Ver o Histórico">
 				<HistoryIcon />
 			</a>
 			<a
@@ -46,12 +54,9 @@ export function Menu() {
 				href="#"
 				aria-label="Mudar Tema"
 				title="Mudar Tema"
-				onClick={(event) => {
-					event.preventDefault();
-					changeTheme();
-				}}
+				onClick={changeTheme}
 			>
-				<SunIcon />
+				{nextThemeIcon[theme]}
 			</a>
 		</nav>
 	);

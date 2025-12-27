@@ -1,10 +1,13 @@
 import { PlayCircleIcon } from "lucide-react";
 import { useRef } from "react";
+import { useTaskContext } from "../../context/TaskContext";
+import type { TaskModel } from "../../models/TaskModelConfig";
 import { Cycles } from "../Cycles";
 import { DefaultButton } from "../DefaultButton";
 import { DefaultInput } from "../DefaultInput";
 
 export const MainForm = () => {
+	const { setState } = useTaskContext();
 	const taskNameInput = useRef<HTMLInputElement>(null);
 
 	const handleCreateNewTask = (event: React.FormEvent<HTMLFormElement>) => {
@@ -16,7 +19,24 @@ export const MainForm = () => {
 			return;
 		}
 
-		const newTask: TaskModel
+		const newTask: TaskModel = {
+			id: Date.now().toString(),
+			name: taskName,
+			startDate: Date.now(),
+			completeDate: null,
+			interruptDate: null,
+			duration: 1,
+			type: "workTime",
+		};
+
+		setState((prevState) => ({
+			...prevState,
+			tasks: [...prevState.tasks, newTask],
+			activeTask: newTask,
+			currentCycle: 1,
+			secondsRemaining: prevState.config.workTime * 60,
+			formattedSecondsRemaining: "00:00",
+		}));
 	};
 
 	return (
