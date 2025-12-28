@@ -1,8 +1,8 @@
-import { PlayCircleIcon } from "lucide-react";
+import { PlayCircleIcon, StopCircleIcon } from "lucide-react";
 import { useRef } from "react";
 import { useTaskContext } from "../../context/TaskContext";
+import { TaskActionTypes } from "../../context/TaskContext/taskAction";
 import type { TaskModel } from "../../models/TaskModelConfig";
-import { formatSecondsToMinutes } from "../../utils/formatSecondsToMinutes";
 import { getNextCycle } from "../../utils/getNextCycle";
 import { getNextCycleType } from "../../utils/getNextCycleType";
 import { getNextInterval } from "../../utils/getNextInterval";
@@ -11,7 +11,7 @@ import { DefaultButton } from "../DefaultButton";
 import { DefaultInput } from "../DefaultInput";
 
 export const MainForm = () => {
-	const { state, setState } = useTaskContext();
+	const { state, dispatch } = useTaskContext();
 	const taskNameInput = useRef<HTMLInputElement>(null);
 
 	const nextCycle = getNextCycle(state.currentCycle);
@@ -36,16 +36,11 @@ export const MainForm = () => {
 			type: nextCycleType,
 		};
 
-		const secondsRemaining = state.config[nextCycleType] * 60;
+		dispatch({ type: TaskActionTypes.START_TASK, payload: newTask });
+	};
 
-		setState((prevState) => ({
-			...prevState,
-			tasks: [...prevState.tasks, newTask],
-			activeTask: newTask,
-			currentCycle: nextCycle,
-			secondsRemaining,
-			formattedSecondsRemaining: formatSecondsToMinutes(secondsRemaining),
-		}));
+	const handleInterruptTask = () => {
+		dispatch({ type: TaskActionTypes.INTERRUPT_TASK });
 	};
 
 	return (
@@ -56,6 +51,7 @@ export const MainForm = () => {
 					htmlFor="task"
 					label="Task:"
 					id="task"
+					disabled={!!state.activeTask}
 					ref={taskNameInput}
 					type="text"
 				/>
@@ -72,7 +68,26 @@ export const MainForm = () => {
 			)}
 
 			<div className="formRow">
-				<DefaultButton icon={<PlayCircleIcon />} color="green" />
+				{!state.activeTask ? (
+					<DefaultButton
+						key="startButton"
+						aria-label="Iniciar nova tarefa"
+						title="Iniciar nova tarefa"
+						type="submit"
+						icon={<PlayCircleIcon />}
+						color="green"
+					/>
+				) : (
+					<DefaultButton
+						key="stopButton" //Para forçar a recriação do botão e evitar problemas de estado interno, pois aqui ele tentará reaproveitar o botão de start como o de stop
+						aria-label="Interromper tarefa atual"
+						title="Interromper tarefa atual"
+						type="button"
+						onClick={handleInterruptTask}
+						icon={<StopCircleIcon />}
+						color="red"
+					/>
+				)}
 			</div>
 		</form>
 	);
