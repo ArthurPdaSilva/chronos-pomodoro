@@ -65,9 +65,11 @@ export const MainForm = () => {
 				<p>Próximo intervalo é de {getNextInterval(state.currentCycle)}min</p>
 			</div>
 
-			<div className="formRow">
-				<Cycles />
-			</div>
+			{state.currentCycle !== 0 && (
+				<div className="formRow">
+					<Cycles />
+				</div>
+			)}
 
 			<div className="formRow">
 				<DefaultButton icon={<PlayCircleIcon />} color="green" />
