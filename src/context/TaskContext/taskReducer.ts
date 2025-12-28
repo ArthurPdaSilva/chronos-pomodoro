@@ -35,7 +35,5 @@ export const taskReducer = (state: TaskStateModel, action: TaskActionModel): Tas
 		}
 		case TaskActionTypes.RESET_STATE:
 			return state;
-		default:
-			return state;
 	}
 };

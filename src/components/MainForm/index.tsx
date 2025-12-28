@@ -5,10 +5,10 @@ import { TaskActionTypes } from "../../context/TaskContext/taskAction";
 import type { TaskModel } from "../../models/TaskModelConfig";
 import { getNextCycle } from "../../utils/getNextCycle";
 import { getNextCycleType } from "../../utils/getNextCycleType";
-import { getNextInterval } from "../../utils/getNextInterval";
 import { Cycles } from "../Cycles";
 import { DefaultButton } from "../DefaultButton";
 import { DefaultInput } from "../DefaultInput";
+import { Tips } from "../Tips";
 
 export const MainForm = () => {
 	const { state, dispatch } = useTaskContext();
@@ -37,6 +37,14 @@ export const MainForm = () => {
 		};
 
 		dispatch({ type: TaskActionTypes.START_TASK, payload: newTask });
+
+		// Workers são scripts que rodam em segundo plano, separados do thread principal da aplicação
+		// Isso aqui é só um exemplo de como criar um worker e enviar uma mensagem para ele, essa sintáxe é específica do Vite
+		const worker = new Worker(new URL("../../workers/timeWorker.js", import.meta.url));
+		worker.postMessage("Teste");
+		worker.onmessage = (message) => {
+			console.log("Mensagem recebida do worker:", message.data);
+		};
 	};
 
 	const handleInterruptTask = () => {
@@ -58,7 +66,7 @@ export const MainForm = () => {
 			</div>
 
 			<div className="formRow">
-				<p>Próximo intervalo é de {getNextInterval(state.currentCycle)}min</p>
+				<Tips />
 			</div>
 
 			{state.currentCycle !== 0 && (
