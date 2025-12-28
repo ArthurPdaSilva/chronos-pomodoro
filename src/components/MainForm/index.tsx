@@ -37,14 +37,6 @@ export const MainForm = () => {
 		};
 
 		dispatch({ type: TaskActionTypes.START_TASK, payload: newTask });
-
-		// Workers são scripts que rodam em segundo plano, separados do thread principal da aplicação
-		// Isso aqui é só um exemplo de como criar um worker e enviar uma mensagem para ele, essa sintáxe é específica do Vite
-		const worker = new Worker(new URL("../../workers/timeWorker.js", import.meta.url));
-		worker.postMessage("Teste");
-		worker.onmessage = (message) => {
-			console.log("Mensagem recebida do worker:", message.data);
-		};
 	};
 
 	const handleInterruptTask = () => {
