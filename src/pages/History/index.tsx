@@ -1,5 +1,6 @@
 import { TrashIcon } from "lucide-react";
 import { useEffect, useState } from "react";
+import { showMessage } from "../../adapters/showMessage";
 import { Container } from "../../components/Container";
 import { DefaultButton } from "../../components/DefaultButton";
 import { Heading } from "../../components/Heading";
@@ -16,6 +17,10 @@ import styles from "./styles.module.css";
 export function History() {
 	const { state, dispatch } = useTaskContext();
 	const hasTasks = state.tasks.length > 0;
+
+	useEffect(() => {
+		document.title = "Histórico - Chronos Pomodoro";
+	}, []);
 
 	useEffect(() => {
 		setSortTasksOptions((prevState) => ({
@@ -46,15 +51,17 @@ export function History() {
 		});
 	};
 
-	const handleResetHistory = () => {
-		if (
-			!confirm(
-				"Tem certeza que deseja apagar todo o histórico de tarefas? Esta ação não pode ser desfeita.",
-			)
-		)
-			return;
+	//Outra solução para evitar que a pergunta de confirmação apareça ao sair da página seria usar o useEffect para limpar o toast quando o componente for desmontado.
+	// useEffect(() => {
+	// 	return () => showMessage.dissmiss();
+	// }, []);
 
-		dispatch({ type: TaskActionTypes.RESET_STATE });
+	const handleResetHistory = () => {
+		showMessage.dissmiss();
+		showMessage.confirm("Tem certeza?", (confirmation) => {
+			if (!confirmation) return;
+			dispatch({ type: TaskActionTypes.RESET_STATE });
+		});
 	};
 
 	return (

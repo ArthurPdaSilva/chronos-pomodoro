@@ -60,6 +60,12 @@ export const taskReducer = (state: TaskStateModel, action: TaskActionModel): Tas
 				formattedSecondsRemaining: "00:00",
 			};
 		}
+		case TaskActionTypes.CHANGE_SETTINGS: {
+			return {
+				...state,
+				config: action.payload.config,
+			};
+		}
 		default: {
 			return state;
 		}
