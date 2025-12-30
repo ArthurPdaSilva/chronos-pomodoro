@@ -1,12 +1,11 @@
-import styles from './styles.module.css';
+import { Link } from "react-router";
+import styles from "./styles.module.css";
 
 export function Footer() {
-  return (
-    <footer className={styles.footer}>
-      <a href=''>Entenda como funciona a técnica Pomodoro</a>
-      <a href=''>
-        Chronos Pomodoro &copy; {new Date().getFullYear()} - Feito com 💚
-      </a>
-    </footer>
-  );
+	return (
+		<footer className={styles.footer}>
+			<Link to="/about-pomodoro">Entenda como funciona a técnica Pomodoro</Link>
+			<Link to="/">Chronos Pomodoro &copy; {new Date().getFullYear()} - Feito com 💚</Link>
+		</footer>
+	);
 }

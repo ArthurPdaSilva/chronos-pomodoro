@@ -1,6 +1,7 @@
 /** biome-ignore-all lint/a11y/useValidAnchor: false positive */
 import { HistoryIcon, HouseIcon, MoonIcon, SettingsIcon, SunIcon } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Link } from "react-router";
 import styles from "./styles.module.css";
 
 type AvailableThemes = "light" | "dark";
@@ -30,25 +31,30 @@ export function Menu() {
 
 	return (
 		<nav className={styles.menu}>
-			<a
+			<Link
 				className={styles.menuLink}
-				href="#"
+				to="/"
 				aria-label="Ir para a Página Inicial"
 				title="Ir para a Página Inicial"
 			>
 				<HouseIcon />
-			</a>
-			<a className={styles.menuLink} href="#" aria-label="Ver o Histórico" title="Ver o Histórico">
-				<HistoryIcon />
-			</a>
-			<a
+			</Link>
+			<Link
 				className={styles.menuLink}
-				href="#"
+				to="/history"
+				aria-label="Ver o Histórico"
+				title="Ver o Histórico"
+			>
+				<HistoryIcon />
+			</Link>
+			<Link
+				className={styles.menuLink}
+				to="#"
 				aria-label="Ir para as Configurações"
 				title="Ir para as Configurações"
 			>
 				<SettingsIcon />
-			</a>
+			</Link>
 			<a
 				className={styles.menuLink}
 				href="#"
