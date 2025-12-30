@@ -14,6 +14,7 @@ import { Tips } from "../Tips";
 export const MainForm = () => {
 	const { state, dispatch } = useTaskContext();
 	const taskNameInput = useRef<HTMLInputElement>(null);
+	const lastTaskName = state.tasks[state.tasks.length - 1]?.name || "";
 
 	const nextCycle = getNextCycle(state.currentCycle);
 	const nextCycleType = getNextCycleType(nextCycle);
@@ -56,6 +57,7 @@ export const MainForm = () => {
 					htmlFor="task"
 					label="Task:"
 					id="task"
+					defaultValue={lastTaskName}
 					disabled={!!state.activeTask}
 					ref={taskNameInput}
 					type="text"

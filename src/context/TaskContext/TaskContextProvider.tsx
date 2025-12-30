@@ -1,6 +1,7 @@
 // biome-ignore assist/source/organizeImports: false positive
 import { useEffect, useReducer, useRef } from "react";
 import { TaskContext } from ".";
+import type { TaskStateModel } from "../../models/TaskModelConfig";
 import { loadBeep } from "../../utils/loadBeep";
 import { TimerWorkerManager } from "../../workers/TimerWorkerManager";
 import { initialTaskState } from "./initialTaskState";
@@ -12,7 +13,19 @@ type TaskContextProviderProps = {
 };
 
 export function TaskContextProvider({ children }: TaskContextProviderProps) {
-	const [state, dispatch] = useReducer(taskReducer, initialTaskState);
+	// O terceiro parâmetro do useReducer é uma função de inicialização preguiçosa (lazy initialization function)
+	const [state, dispatch] = useReducer(taskReducer, initialTaskState, () => {
+		const storedState = localStorage.getItem("state");
+		if (!storedState) return initialTaskState;
+
+		const parsedState: TaskStateModel = JSON.parse(storedState);
+		return {
+			...parsedState,
+			activeTask: null,
+			secondsRemaining: 0,
+			formattedSecondsRemaining: "00:00",
+		};
+	});
 	const playBeepRef = useRef<ReturnType<typeof loadBeep> | null>(null); //Isso aqui garante que a função de tocar o som seja criada apenas uma vez e não a cada renderização
 
 	const worker = TimerWorkerManager.getInstance();
@@ -43,11 +56,13 @@ export function TaskContextProvider({ children }: TaskContextProviderProps) {
 	}, [state.activeTask]);
 
 	useEffect(() => {
+		localStorage.setItem("state", JSON.stringify(state));
+
 		if (!state.activeTask) {
 			worker.terminate();
-			return;
 		}
 
+		document.title = `${state.formattedSecondsRemaining} - Chronos Pomodoro`;
 		worker.postMessage(state);
 	}, [state, worker]);
 

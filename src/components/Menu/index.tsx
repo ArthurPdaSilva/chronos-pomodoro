@@ -13,6 +13,7 @@ const nextThemeIcon = {
 
 //Para renomear use ctrl + f e preserve o case sensitive
 export function Menu() {
+	// Uma função passada dentro de um useState é chamada de lazy initial state, pois só é executada na primeira renderização
 	const [theme, setTheme] = useState<AvailableThemes>(() => {
 		const storageTheme = (localStorage.getItem("theme") as AvailableThemes) || "dark";
 		return storageTheme;
