@@ -1,4 +1,9 @@
 export type TaskDurationType = "workTime" | "shortBreakTime" | "longBreakTime";
+export const taskTypeDictionary: Record<TaskDurationType, string> = {
+	workTime: "Foco",
+	shortBreakTime: "Pausa Curta",
+	longBreakTime: "Pausa Longa",
+};
 
 export type TaskConfig = {
 	workTime: number;
