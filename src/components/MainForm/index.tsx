@@ -29,6 +29,11 @@ export const MainForm = () => {
 			return;
 		}
 
+		if (state.tasks.length > 50) {
+			showMessage.warning("Histórico de tarefas cheio. Limpe-o");
+			return;
+		}
+
 		const newTask: TaskModel = {
 			id: Date.now().toString(),
 			name: taskName,
